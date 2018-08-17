@@ -1,6 +1,8 @@
 # EOS hello world
 
-> An EOS hello world contract tutorial
+> An [EOS](https://eos.io/) hello world contract tutorial
+
+## Tutorial
 
 Install EOS node
 
@@ -176,6 +178,10 @@ root@080f8f30a32b:/hello# exit
 
 $ docker stop eosio
 ```
+
+## Resources
+
+- [EOSIO Developer Portal](https://developers.eos.io/)
 
 ## License
 
