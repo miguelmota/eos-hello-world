@@ -1,6 +1,8 @@
 # EOS hello world
 
-Installing EOS node
+> An EOS hello world contract tutorial
+
+Install EOS node
 
 ```bash
 # pull eos image
@@ -13,34 +15,17 @@ docker run --rm --name eosio -d -p 8888:8888 -p 9876:9876 -v /tmp/work:/work -v 
 docker logs --follow eosio
 ```
 
-In a seperate tab
+Verify it's running `http://localhost:8888/v1/chain/get_info`
 
-```bash
-# see chain info
-open http://localhost:8888/v1/chain/get_info
-
-# alias for cli
-alias cleos='docker exec -it eosio /opt/eosio/bin/cleos -u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888'
-
-# verify cli
-cleos --help
-```
-
-Stopping EOS node
-
-```bash
-docker stop eosio
-```
-
-SSH into container
+In a seperate tab, SSH into container
 
 ```bash
 docker exec -it eosio bash
 ```
 
-### Creating a wallet
+Creating a wallet
 
-```
+```bash
 root@080f8f30a32b:/# cleos wallet create --to-console
 "/opt/eosio/bin/keosd" launched
 Creating wallet: default
@@ -49,7 +34,7 @@ Without password imported keys will not be retrievable.
 "PW5JgTJAcf9JTeHCrecqntBeZnjePoRWSpCxspfiA386EN5zyncQr"
 ```
 
-unlock wallet before importing
+Unlock wallet to allow importing keys
 
 ```bash
 root@080f8f30a32b:/hello# cleos wallet unlock
@@ -71,9 +56,7 @@ root@080f8f30a32b:/# cleos wallet import --private-key 5HuQGCKyW1cGHDVuHdfLfDHx3
 imported private key for: EOS5wpScdMKwBnmZ95AGrAqFUfLUL8pg2V35eQb6GKyfu7wvAHGs8
 ```
 
-https://github.com/EOSIO/eos/issues/4154#issuecomment-397820824
-
-set the eosio master contract and sign it with the private key we imported
+Set the eosio master contract and sign it with the private key we imported ([?](https://github.com/EOSIO/eos/issues/4154#issuecomment-397820824))
 
 ```bash
 root@080f8f30a32b:/# cleos set contract eosio contracts/eosio.bios -p eosio@active
@@ -82,7 +65,7 @@ Publishing contract...
 
 Create an account
 
-```
+```bash
 root@080f8f30a32b:/# cleos create account eosio bob EOS5wpScdMKwBnmZ95AGrAqFUfLUL8pg2V35eQb6GKyfu7wvAHGs8
 executed transaction: 2ee5250dc8bcaf8c23fef2e9adc2abc50e93687249aab0c8908175f87e6ca6b5  200 bytes  392 us
 #         eosio <= eosio::newaccount            {"creator":"eosio","name":"bob","owner":{"threshold":1,"keys":[{"key":"EOS5wpScdMKwBnmZ95AGrAqFUfLU...
@@ -91,7 +74,7 @@ warning: transaction executed locally, but may not be confirmed by the network y
 
 List accounts
 
-```
+```bash
 root@080f8f30a32b:/# cleos get accounts EOS5wpScdMKwBnmZ95AGrAqFUfLUL8pg2V35eQb6GKyfu7wvAHGs8
 {
   "account_names": [
@@ -100,7 +83,7 @@ root@080f8f30a32b:/# cleos get accounts EOS5wpScdMKwBnmZ95AGrAqFUfLUL8pg2V35eQb6
 }
 ```
 
-create a directory for the contract and cd into
+Create a directory for the contract and cd into it
 
 ```bash
 root@080f8f30a32b:/# mkdir hello
@@ -151,8 +134,7 @@ executed transaction: c29c81b8314d9666ab9bb5a58874e22f8945761dac4673a573cccaab01
 warning: transaction executed locally, but may not be confirmed by the network yet    ]
 ```
 
-
-Send a test transaction without broadcasting and returning json
+Send a test transaction without broadcasting and tx info as json
 
 ```bash
 root@080f8f30a32b:/hello# cleos push action hello.code hi '["bob"]' -d -j
@@ -177,7 +159,7 @@ root@080f8f30a32b:/hello# cleos push action hello.code hi '["bob"]' -d -j
 }
 ```
 
-Send an transaction and sign with the user key
+Sign transaction with the user key and broadcast it
 
 ```bash
 root@080f8f30a32b:/hello# cleos push action hello.code hi '["bob"]' -p bob@active
@@ -186,3 +168,15 @@ executed transaction: 70dfa363049d8abc073d01568b9953569abe1e8a1c5da3be735f047a5f
 >> Hello, bob
 warning: transaction executed locally, but may not be confirmed by the network yet    ]
 ```
+
+Stop the EOS node
+
+```bash
+root@080f8f30a32b:/hello# exit
+
+$ docker stop eosio
+```
+
+## License
+
+MIT
